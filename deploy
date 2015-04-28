@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+# require "pretty_print"
+current = `git rev-parse --abbrev-ref HEAD`
+puts status = `rake replace:detrail`
+puts status ? 'Success' : 'Failed'
+puts status = `git add -A`
+puts status ? 'Success' : 'Failed'
+puts status = `git commit -m 'commiting changes for deploy'; true`
+
+branches = ARGV
+remotes = `git remote show`.split("\n")
+
+branches.each do |branch|
+  puts `git checkout #{branch}`
+  puts `git merge #{current}`
+  remotes.each do |remote|
+    puts `git push #{remote} #{branch}`
+  end
+  IO.popen("cap #{branch} deploy") do |deploy|
+    deploy.each do |line|
+      print line
+    end
+  end
+end

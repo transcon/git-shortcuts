@@ -1,0 +1,28 @@
+#!/bin/bash
+
+
+# Switch to topical branch: Create and start tracking if necessary
+#  - Always checks local first- jumps over if already there
+#  - Then checks on updated origin- sets up local tracking branch if exists up there
+#  - If none, creates a new local branch  ** BASED ON origin/master ** (not current branch)
+#  - Creates the remote branch with the same name and sets up tracking
+#
+#  - If after the branch is ready for editing it does not have a description, find it or create it
+
+set -e
+
+if [[ -n $(git branch --list "${1}") ]]; then
+  # Already a local branch ready to go
+  git checkout "${1}"
+else
+  # No local branch yet
+  git fetch && \
+  git checkout "${1}" || ( \
+    git checkout --no-track -b "${1}" origin/master && \
+    ( git branch -u "origin/${1}" || git push -u origin "${1}" ) )
+fi
+
+#if [ -z $(git config "branch.${1}.description") ]; then
+#  git branch --edit-description
+#fi
+# TODO: need to do this but also store it in a note as per http://stackoverflow.com/questions/7226953/branch-descriptions-in-git-continued

@@ -1,0 +1,14 @@
+#!/bin/bash
+set -e
+
+if [[ -n $(echo $PATH | grep 'git-commands') ]]; then
+  echo 'Path already set'
+else
+  if [[ -n $(cat ~/.bash_profile | grep 'git-commands') ]]; then
+    echo 'Path variable already assigned in .bash_profile'
+  else
+    DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+    echo export PATH=\$PATH:$DIR >> ~/.bash_profile
+  fi
+  echo 'Please restart your terminal'
+fi

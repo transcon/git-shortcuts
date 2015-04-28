@@ -1,0 +1,6 @@
+#!/bin/bash
+set -e
+CURR_BR=$(git rev-parse --abbrev-ref HEAD)
+git pull origin "${CURR_BR}"
+git fetch origin master
+git rebase origin/master

@@ -1,0 +1,8 @@
+#!/bin/bash
+BS="${BASH_SOURCE[0]}";RL="readlink";([[ `uname -s`=='Darwin' ]] || RL="$RL -f")
+  while([ -h "${BS}" ]) do BS=`$RL "${BS}"`; done
+  N="/dev/null";pushd .>$N;cd `dirname ${BS}`>$N;BS=`pwd`;popd>$N
+
+ln -s "${BS}/hooks/pre-commit"         "$(git rev-parse --git-dir)/hooks/"
+ln -s "${BS}/hooks/prepare-commit-msg" "$(git rev-parse --git-dir)/hooks/"
+ln -s "${BS}/hooks/commit-msg"         "$(git rev-parse --git-dir)/hooks/"

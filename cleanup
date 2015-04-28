@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+
+`cd "$(git rev-parse --show-toplevel)"`
+environments = Dir.glob("config/deploy/*")
+keep_branches = environments.map{ |b| b.split("/").pop}.map{|b| b.split(".")[0]}
+keep_branches << 'master'
+remotes=`git remote show`.split("\n")
+`git checkout master`
+`git pull`
+
+remotes.each do |remote|
+  `git fetch #{remote}`
+  `git remote prune #{remote}`
+  branches = []
+  `git branch -r --merged`.split("\n").each do |branch|
+    branches << branch.strip.gsub("#{remote}/",'')
+  end
+  branches -= keep_branches
+  branches.each do |branch|
+    `git push #{remote} :#{branch}` unless branch.match("/") || branch.match("->")
+  end
+  `git remote prune #{remote}`
+end
+branches=[]
+`git branch --merged`.split("\n").each do |branch|
+  branches << branch.strip
+end
+branches -= keep_branches
+branches.each do |branch|
+  `git branch -D #{branch}` unless branch.match('\*') || branch.match("->")
+end

@@ -1,0 +1,7 @@
+#!/bin/bash
+set -e
+
+echo $* |\
+  tr '[/\ /]' '-' |\
+  tr -d '[/\./]' |\
+  xargs -L1 git checkout -b
