@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+location = File.expand_path(__FILE__).split('/')[0..-3].join('/')
+bashrc = `cat ~/.bashrc`
+unless bashrc.include?(location)
+  `touch ~/.bashrc`
+  `echo PATH=\\$PATH:#{location} >> ~/.bashrc`
+end

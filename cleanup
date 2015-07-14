@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-`cd "$(git rev-parse --show-toplevel)"`
-environments = Dir.glob("config/deploy/*")
+root = `git rev-parse --show-toplevel`.strip
+environments = Dir.glob("#{root}/config/deploy/*")
 keep_branches = environments.map{ |b| b.split("/").pop}.map{|b| b.split(".")[0]}
 keep_branches << 'master'
 remotes=`git remote show`.split("\n")
